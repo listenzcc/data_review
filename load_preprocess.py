@@ -3,7 +3,7 @@
 import os
 import mne
 import numpy as np
-import matplotlib.pyplot as plt
+# import matplotlib.pyplot as plt
 from pick_good_sensors import good_sensors
 
 smooth_kernel = 1/200+np.array(range(200))*0
@@ -29,9 +29,9 @@ fname_list = fname_training_list
 fname = fname_list[3]
 
 
-def get_epochs(fname, event_id, tmin, t0, tmax, good_sensors=True):
+def get_epochs(fname, event_id, tmin, t0, tmax, use_good_sensors=True):
     # Make defaults
-    freq_l, freq_h = 1, 15
+    freq_l, freq_h = 0, 2  # 1, 15
     baseline = (tmin, t0)
     reject = dict(mag=5e-12, grad=4000e-13)
     decim = 1
@@ -40,7 +40,7 @@ def get_epochs(fname, event_id, tmin, t0, tmax, good_sensors=True):
     raw = mne.io.read_raw_fif(fname, preload=True)
     picks = mne.pick_types(raw.info, meg=True, eeg=False,
                            eog=False, stim=False, exclude='bads')
-    if good_sensors:
+    if use_good_sensors:
         sensors, picks = good_sensors(raw.ch_names)
     raw = mne.io.RawArray(smooth(raw.get_data(), picks), raw.info)
     raw.filter(freq_l, freq_h, fir_design='firwin')
@@ -51,7 +51,7 @@ def get_epochs(fname, event_id, tmin, t0, tmax, good_sensors=True):
                         decim=decim, tmin=tmin, tmax=tmax,
                         picks=picks, baseline=baseline,
                         reject=reject, preload=True)
-    return epochs
+    return epochs, raw
 
 
 '''
