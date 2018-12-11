@@ -4,7 +4,7 @@ import os
 import sys
 import numpy as np
 import matplotlib.pyplot as plt
-from load_preprocess import get_epochs
+from load_preprocess_view import get_epochs
 sys.path.append('C:\\Users\\liste\\Documents\\Python Scripts\\clock_tools')
 from simple_timer import simple_timer
 
@@ -69,7 +69,7 @@ def plot_tasks_in_timeline(raw, epochs, duration=1,
 
 
 st = simple_timer()
-train = False
+train = True
 fname_list, ortids, event_ids, tmin, t0, tmax = para_setting(train=train)
 # show pretty evoked topo
 # fname = fname_list[0]
@@ -93,5 +93,5 @@ for fname in fname_list:
 
     st.click()
 
-plt.show()
-# plt.close('all')
+# plt.show()
+plt.close('all')

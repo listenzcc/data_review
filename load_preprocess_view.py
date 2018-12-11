@@ -31,7 +31,7 @@ fname = fname_list[3]
 
 def get_epochs(fname, event_id, tmin, t0, tmax, use_good_sensors=True):
     # Make defaults
-    freq_l, freq_h = 0, 2  # 1, 15
+    freq_l, freq_h = 0.1, 5  # 1, 15
     baseline = (tmin, t0)
     reject = dict(mag=5e-12, grad=4000e-13)
     decim = 1
