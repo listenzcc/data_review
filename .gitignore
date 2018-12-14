@@ -1,3 +1,5 @@
+*.png
+*.mat
 pics*
 __pycache__
 model_save_path*
