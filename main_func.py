@@ -95,7 +95,7 @@ for fname in fname_list:
     epochs, raw = get_epochs(fname=fname, event_id=event_ids,
                              tmin=tmin, t0=t0, tmax=tmax,
                              use_good_sensors=False)
-    save_epochs_as_txt(epochs, os.path.join('pics', basename))
+    #  save_epochs_as_txt(epochs, os.path.join('pics', basename))
 
     fig, axes = plt.subplots(1, 1)
     raw.plot_sensors(show_names=True, axes=axes, show=False)

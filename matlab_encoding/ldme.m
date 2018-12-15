@@ -2,7 +2,9 @@ close all
 clear
 clc
 
-data_dir = fullfile('..', 'pics', 'MultiTraining_2_raw_tsss')
+tsss_name = 'MultiTraining_5_raw_tsss';
+
+data_dir = fullfile('..', 'pics', tsss_name)
 
 events = load(fullfile(data_dir, 'events.txt'));
 events = events(:, 3);
