@@ -9,7 +9,7 @@ for run_ = 1 : 5
     tsss_name = sprintf('MultiTraining_%d_raw_tsss', run_);
     mat_name = sprintf('para_guess_%s.mat', tsss_name)
     result_dir = 'results_naive_scale';
-    %% load data
+    %% load parameters
     load(fullfile(result_dir, mat_name), 'para_guess')
     %% time seriers
     t = linspace(-0.2, 0.8, 1001);
