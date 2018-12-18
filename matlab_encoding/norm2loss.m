@@ -12,7 +12,7 @@ y = gabor(t, para_arr);
 diff = bsxfun(@plus, d, -y);
 
 %% cal culate loss as Eucidean distance
-loss = sum(diag((diff' * diff) .^ 0.5));
+loss = sum(diag((diff' * diff) .^ 0.1));
 
 end
 

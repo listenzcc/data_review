@@ -24,13 +24,14 @@ for ort_idx = 1 : num_ort
         d = scale(d, t)';
         d = mean(d, 2);
         save tmp_data t d
-
+        
         % set para initial, bottom and top boundry
         ma = max(d(:));
         mi = min(d(:));
-        para_arr = [1, 0.2, 0.1, 0.3, 2, 0.3];
-        para_bot = [mi, mi, min(t), 0, 0, -pi];
-        para_top = [ma, ma, max(t), 5, 1/max(t), pi];
+        m = mean(d(:));
+        para_arr = [ma, m, 0.2, 0.3, 50, 1, 50, 1];
+        para_bot = [mi, mi, min(t), 0.1, 40, 0, 40, 0];
+        para_top = [ma, ma, max(t), 0.5, 60, pi, 60, pi];
         
         % estimate
         para_guess{j, ort_idx} = fmincon(@norm2loss, para_arr, [], [], [], [], para_bot, para_top);

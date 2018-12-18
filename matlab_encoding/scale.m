@@ -1,5 +1,9 @@
 function y = scale(x, t)
 % x: data tobe scaled, t: time seriers
+
+y = x * 1e14;
+return
+
 %% naive scale, zscore method
 y = (x - mean(x(:))) / std(x(:));
 return
