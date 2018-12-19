@@ -10,7 +10,25 @@ from load_preprocess_MVPA import get_epochs
 
 
 def scale(x):
-    return x * 1e14
+    return x * 1e12
+
+
+accu_mat = np.triu(np.ones([1501, 1501])/1501, 0)
+ts = np.linspace(-0.25, 1.25, 1501)
+
+
+def accumulate(x, mat=accu_mat, ts=ts):
+    y = x.copy()
+    shape = x.shape
+    for j in range(shape[0]):
+        for k in range(shape[1]):
+            y_ = y[j][k]
+            yy_ = np.dot(y_, mat)
+            b_ = yy_[ts < 0]
+            yy_ -= np.mean(b_)
+            yy_ /= np.std(b_)
+            y[j][k] = yy_
+    return y
 
 
 # Prepare filename QYJ, ZYF
@@ -37,20 +55,20 @@ for fname in fname_list:
                         envlop=False)
     epochs_run.append(epochs)
     data_ = dict()
-    data_['X'] = np.vstack(epochs[ort_name[j]].get_data() for j in range(6))
+    tmp = np.vstack(epochs[ort_name[j]].get_data() for j in range(6))
+    data_['X'] = accumulate(tmp)
     data_['y'] = np.vstack(
         j+np.ones([len(epochs[ort_name[j]].get_data()), 1]) for j in range(6))
     data_run.append(data_)
 
 # train and test
 run_all = [0, 1, 2, 3, 4]
-ts = np.linspace(-0.25, 1.25, 1501)
 acc_all = np.zeros([5, 1501])
 for run_test in run_all:
     run_train = run_all.copy()
     run_train.pop(run_test)
     print(run_train)
-    for t_ in range(200, 1201):
+    for t_ in range(200, 1201, 10):
         X_train_ = []
         y_train_ = []
         for k in range(-5, 6):

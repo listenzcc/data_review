@@ -1,12 +1,12 @@
 function y = scale(x, t)
 % x: data tobe scaled, t: time seriers
 
-% y = x * 1e14;
-% return
+y = x * 1e14;
+return
 
 %% naive scale, zscore method
-% y = (x - mean(x(:))) / std(x(:));
-% return
+y = (x - mean(x(:))) / std(x(:));
+return
 
 %% scale data using mean and std value of t<0
 %% data size is 12x1001, 12 samples, 1001 ms

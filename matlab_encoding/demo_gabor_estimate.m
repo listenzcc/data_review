@@ -9,6 +9,13 @@ figure
 subplot(2, 1, 1)
 plot(t, data_example)
 
+data_c = triu(ones(1001))' * data_example / 1001;
+data_c = scale(data_c', t)';
+subplot(2, 1, 2)
+plot(t, data_c)
+
+return
+
 gabor_ = nan(1001, 6);
 for j = 1 : 6
     % prepare tmp data for fmincon

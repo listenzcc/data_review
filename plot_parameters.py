@@ -71,12 +71,12 @@ for fname in fname_list:
         if p_ == 'loss':
             continue
         para_path = os.path.join('matlab_encoding',
-                                 'results_naive_scale',
+                                 'results_naive_scale_v2',
                                  basename+'_para_%s.txt.mat' % p_)
         para_ = np.loadtxt(para_path)
         para2show[p_] = para_[map_ch_names == 1, :]
     para_path = os.path.join('matlab_encoding',
-                             'results_naive_scale',
+                             'results_naive_scale_v2',
                              basename+'_loss_train.txt.mat')
     para_ = np.loadtxt(para_path)
     para2show['loss'] = para_[map_ch_names == 1, :]
@@ -127,4 +127,5 @@ for fname in fname_list:
                  dpi=300)
     st.click()
 
+plt.close('all')
 plt.show()

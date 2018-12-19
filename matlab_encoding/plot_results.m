@@ -20,6 +20,8 @@ for run_ = 1 : 5
     para_d = nan(306, 6);
     para_w = nan(306, 6);
     para_p = nan(306, 6);
+    para_w0 = nan(306, 6);
+    para_p0 = nan(306, 6);
     
     %% for each ort_, fill parameters, plot 306 Gabor
     for ort_ = 1 : 6
@@ -31,6 +33,8 @@ for run_ = 1 : 5
             para_d(j, ort_) = para_guess{j, ort_}(4);
             para_w(j, ort_) = para_guess{j, ort_}(5);
             para_p(j, ort_) = para_guess{j, ort_}(6);
+            para_w0(j, ort_) = para_guess{j, ort_}(7);
+            para_p0(j, ort_) = para_guess{j, ort_}(8);
         end
         % plot 306 Gabor
         subplot(6, 5, (ort_-1)*5+run_)

@@ -17,7 +17,7 @@ C0 = cos(w0*t + p0);
 
 %% calculate Gabor from parts
 % y = A * E .* C + A0;
-y = A * E .^ 2 + A0 * C0;
+y = A * E .* C + A0 * C0;
 
 %% make output column
 if isrow(y)

@@ -6,10 +6,10 @@ plot_debug = false;
 result_dir = 'results_naive_scale';
 
 %% prepare gabor model
-% para_all, 5 run x 306 sensors x 6 orts x 6 parameters
+% para_all, 5 run x 306 sensors x 6 orts x 8 parameters
 % gabor_all, 5 run x 306 sensors x 6 orts x 1001 ms
 % ts, 1001 ms
-para_all = nan(5, 306, 6, 6);
+para_all = nan(5, 306, 6, 8);
 gabor_all = nan(5, 306, 6, 1001);
 ts = linspace(-0.2, 0.8, 1001);
 
@@ -161,10 +161,13 @@ for run_ = 1 : 5
     figure
     for ort_ = 1 : 6
         loss_ = loss_estimate(run_, :, ort_, :, :);
-        loss__ = mean(loss_, 2);
+        idx_ = squeeze(loss_train(run_, :, ort_)) < 1000;
+        loss__ = mean(loss_(:, idx_, :, :, :), 2);
         loss___ = squeeze(loss__);
         subplot(6, 1, ort_)
         plot(loss___', 'o-', 'LineWidth', 2)
+        loss___(run_, :) = '';
+        title(sprintf('%.2f, %.2f, %.2f, %.2f, %.2f, %.2f', mean(loss___)))
         set(gca, 'Box', 'Off')
         set(gca, 'XTick', 1:6)
     end
