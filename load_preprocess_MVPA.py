@@ -46,7 +46,7 @@ def get_envlop(data, picks):
     return data
 
 
-def get_epochs(fname, train, envlop=False):
+def get_epochs(fname, train, envlop=False, freq_l=1, freq_h=15):
     # Make defaults
     if train:
         event_id = dict(ort015=2,  ort045=6,  ort075=9,
@@ -57,7 +57,6 @@ def get_epochs(fname, train, envlop=False):
                         ort45b=32, ort135b=64)
         tmin, t0, tmax = -0.4, -0.2, 1.25
 
-    freq_l, freq_h = 1, 15
     baseline = (tmin, t0)
     reject = dict(mag=5e-12, grad=4000e-13)
     decim = 1

@@ -37,20 +37,22 @@ train = True
 fname_list, ortids, event_ids, tmin, t0, tmax = para_setting(train=train)
 
 t = np.triu(np.ones([1001, 1001])/1001, 0)
+ts = np.linspace(tmin, tmax, 1001)
 
 for fname in fname_list:
     print(fname)
-    basename = os.path.basename(fname[0:-4])
     epochs, raw = get_epochs(fname=fname, event_id=event_ids,
                              tmin=tmin, t0=t0, tmax=tmax,
+                             freq_l=1, freq_h=5,
                              use_good_sensors=False)
 
     evoked = epochs.average()
     evoked.plot_topo(show=False)
 
     data = np.dot(evoked.data, t)
+    data = evoked.data
     plt.figure()
-    plt.plot(data.transpose())
+    plt.plot(ts, data.transpose())
 
     evoked.data = data
     evoked.plot_topo(show=False)

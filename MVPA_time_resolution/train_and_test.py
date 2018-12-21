@@ -5,6 +5,11 @@ import sys
 import numpy as np
 import matplotlib.pyplot as plt
 from sklearn.linear_model import LogisticRegressionCV
+from sklearn.svm import SVC
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.ensemble import VotingClassifier
+from sklearn.decomposition import PCA
 sys.path.append('..')
 from load_preprocess_MVPA import get_epochs
 
@@ -71,7 +76,7 @@ for run_test in run_all:
     for t_ in range(200, 1201, 10):
         X_train_ = []
         y_train_ = []
-        for k in range(-5, 6):
+        for k in [0]:  # range(-10, 10):
             X_train_.append(
                 np.vstack(data_run[j]['X'][:, :, t_+k] for j in run_train))
             y_train_.append(np.vstack(data_run[j]['y'] for j in run_train))
@@ -79,13 +84,25 @@ for run_test in run_all:
         y_train = np.vstack(y_train_)
         X_test = data_run[run_test]['X'][:, :, t_]
         y_test = data_run[run_test]['y']
+
+        pca = PCA(n_components=20)
+        X_train = pca.fit_transform(X_train)
+        X_test = pca.transform(X_test)
         # Train classifier
         clf = LogisticRegressionCV(multi_class='multinomial',
                                    solver='lbfgs',
                                    penalty='l2',
                                    cv=5)
+
+        # clf1 = DecisionTreeClassifier(max_depth=4)
+        # clf2 = KNeighborsClassifier(n_neighbors=7)
+        # clf3 = SVC(gamma=.1, kernel='rbf', probability=True)
+        # clf = VotingClassifier(estimators=[(
+        #     'dt', clf1), ('knn', clf2), ('svc', clf3)], voting='soft', weights=[2, 1, 2])
+
         print('Training')
-        clf.fit(scale(X_train), np.ravel(y_train))
+        clf.fit(X_train, np.ravel(y_train))
+
         # Test classifier
         print('Testing')
         y_guess = clf.predict(scale(X_test))
