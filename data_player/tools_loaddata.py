@@ -69,12 +69,12 @@ def good_sensors(ch_names,
 def get_epochs(fname, event_id,
                tmin, t0, tmax,
                freq_l=1, freq_h=10,
+               decim=1,
                use_good_sensors=True,
                get_envlop=False):
     # Make defaults
     baseline = (tmin, t0)
     reject = dict(mag=5e-12, grad=4000e-13)
-    decim = 1
 
     # Prepare rawobject
     raw = mne.io.read_raw_fif(fname, preload=True)
