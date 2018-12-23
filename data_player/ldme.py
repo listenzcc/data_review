@@ -12,12 +12,14 @@ from tools_loaddata import para_setting, get_epochs
 from sklearn.pipeline import make_pipeline
 from sklearn.preprocessing import StandardScaler
 from sklearn.linear_model import LogisticRegression
+from sklearn.svm import SVC
 
 sys.path.append('C:\\Users\\liste\\Documents\\Python Scripts\\clock_tools')
 from simple_timer import simple_timer
 
 n_jobs = 6
 clf = make_pipeline(StandardScaler(), LogisticRegression())
+clf = make_pipeline(StandardScaler(), SVC(gamma='auto'))
 scoring = 'accuracy'
 
 
@@ -31,15 +33,16 @@ def train_test(X_train, y_train, X_test, y_test,
     return time_gen.score(X=X_test, y=y_test)
 
 
-def plot_scores(scores, times):
+def plot_scores(scores, times, axes=None):
     # plot scores,
     # left: diag values, right: across time resolution
     # Plotting layout
-    fig, axes = plt.subplots(1, 2)
+    if axes is None:
+        fig, axes = plt.subplots(1, 2)
     # Plot Decoding over time
     ax = axes[0]
     im = ax.plot(times, np.diag(scores), label='score')
-    ax.axhline(1/6, color='k', linestyle='--', label='chance')
+    ax.axhline(.5, color='k', linestyle='--', label='chance')
     ax.set_xlabel('Times')
     ax.set_ylabel('ACC')
     ax.legend()
@@ -129,12 +132,22 @@ for rep_ in range(num_repeat):
             confuse_mat[combin_[0], combin_[1], :, :, cross_, rep_] = scores
             st.click()
 
+np.save('pics/confuse_mat_cross.npy', confuse_mat)
+# confuse_mat's shape is 6 x 6 x 5 x 100 x 101 x 101
+# 6 orts x 6 orts x 5 cross x 100 repeats x 101 times x 101 times
+confuse_mat = np.transpose(confuse_mat, [0, 1, 4, 5, 2, 3])
+
+
+def shrink_to_scores(mat_4d):
+    tmp = np.mean(mat_4d, 0)
+    return np.mean(tmp, 0)
+
 
 def plot_confuse_mat(confuse_mat, times):
     fig, axes = plt.subplots(6, 6)
     for j in range(6):
         for k in range(6):
-            scores = np.mean(confuse_mat[j][k], 2)
+            scores = shrink_to_scores(confuse_mat[j][k])
             ax = axes[j][k]
             im = ax.matshow(scores, vmin=0, vmax=1., cmap='RdBu_r',
                             origin='lower',
@@ -148,6 +161,23 @@ def plot_confuse_mat(confuse_mat, times):
             plt.colorbar(im, ax=ax)
 
 
-plot_scores(scores, epochs.times)
+times = epochs.times
+# plot_scores(scores, times)
+plot_confuse_mat(confuse_mat, times)
+
+ort_combine = dict()
+ort_combine[30] = [(0, 1), (1, 2), (2, 3), (3, 4), (4, 5)]
+ort_combine[60] = [(0, 2), (1, 3), (2, 4), (3, 5)]
+ort_combine[90] = [(0, 3), (1, 4), (2, 5)]
+
+scores_d = dict()
+for dort_ in ort_combine.keys():
+    confuse_mat_ = np.vstack(
+        confuse_mat[e[0], e[1]] for e in ort_combine[dort_])
+    scores_d[dort_] = shrink_to_scores(confuse_mat_)
+
+fig, axes = plt.subplots(3, 2)
+for dort_ in ort_combine.keys():
+    plot_scores(scores_d[dort_], times, axes=axes[int(dort_/30)-1])
 
 plt.show()
