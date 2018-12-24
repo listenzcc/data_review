@@ -166,6 +166,11 @@ times = epochs.times
 plot_confuse_mat(confuse_mat, times)
 
 ort_combine = dict()
+ort_combine[0] = [(0, 1), (0, 2), (0, 3), (0, 4), (0, 5),
+                  (1, 2), (1, 3), (1, 4), (1, 5),
+                  (2, 3), (2, 4), (2, 5),
+                  (3, 4), (3, 5),
+                  (4, 5)]
 ort_combine[30] = [(0, 1), (1, 2), (2, 3), (3, 4), (4, 5)]
 ort_combine[60] = [(0, 2), (1, 3), (2, 4), (3, 5)]
 ort_combine[90] = [(0, 3), (1, 4), (2, 5)]
@@ -176,8 +181,8 @@ for dort_ in ort_combine.keys():
         confuse_mat[e[0], e[1]] for e in ort_combine[dort_])
     scores_d[dort_] = shrink_to_scores(confuse_mat_)
 
-fig, axes = plt.subplots(3, 2)
+fig, axes = plt.subplots(4, 2)
 for dort_ in ort_combine.keys():
-    plot_scores(scores_d[dort_], times, axes=axes[int(dort_/30)-1])
+    plot_scores(scores_d[dort_], times, axes=axes[int(dort_/30)])
 
 plt.show()
