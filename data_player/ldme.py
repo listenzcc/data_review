@@ -18,8 +18,9 @@ sys.path.append('C:\\Users\\liste\\Documents\\Python Scripts\\clock_tools')
 from simple_timer import simple_timer
 
 n_jobs = 6
-clf = make_pipeline(StandardScaler(), LogisticRegression())
-clf = make_pipeline(StandardScaler(), SVC(gamma='auto'))
+clf = make_pipeline(StandardScaler(), LogisticRegression(
+    solver='liblinear', penalty='l1'))
+# clf = make_pipeline(StandardScaler(), SVC(gamma='auto'))
 scoring = 'accuracy'
 
 
@@ -75,7 +76,7 @@ for fname in fname_list:
     print(fname)
     epochs, raw = get_epochs(fname=fname, event_id=event_ids,
                              tmin=tmin, t0=t0, tmax=tmax,
-                             freq_l=1, freq_h=15,
+                             freq_l=1, freq_h=5,
                              decim=10,
                              use_good_sensors=False,
                              get_envlop=False)
