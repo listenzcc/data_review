@@ -15,7 +15,7 @@ def plot_scores(scores, times, axes=None):
     ax.axhline(.5, color='k', linestyle='--', label='chance')
     ax.set_xlabel('Times')
     ax.set_ylabel('ACC')
-    ax.legend()
+    # ax.legend()
     ax.axvline(.0, color='k', linestyle='-')
     ax.set_title('Decoding MEG sensors over time')
     # Plot Generalization over time
@@ -32,7 +32,7 @@ def plot_scores(scores, times, axes=None):
     plt.colorbar(im, ax=ax)
 
 
-confuse_mat = np.load('pics/confuse_mat_cross_lr.npy')
+confuse_mat = np.load('pics/confuse_mat_cross_lr_5hz.npy')
 # confuse_mat's shape is 6 x 6 x 5 x 100 x 101 x 101
 # 6 orts x 6 orts x 5 cross x 100 repeats x 101 times x 101 times
 confuse_mat = np.transpose(confuse_mat, [0, 1, 4, 5, 2, 3])
@@ -47,8 +47,12 @@ def plot_confuse_mat(confuse_mat, times):
     fig, axes = plt.subplots(6, 6)
     for j in range(6):
         for k in range(6):
+            if j >= k:
+                continue
             scores = shrink_to_scores(confuse_mat[j][k])
             ax = axes[j][k]
+            plot_scores(scores, times, axes=[axes[j][k], axes[k][j]])
+            continue
             im = ax.matshow(scores, vmin=0, vmax=1., cmap='RdBu_r',
                             origin='lower',
                             extent=times[[0, -1, 0, -1]])
@@ -84,5 +88,17 @@ for dort_ in ort_combine.keys():
 fig, axes = plt.subplots(4, 2)
 for dort_ in ort_combine.keys():
     plot_scores(scores_d[dort_], times, axes=axes[int(dort_/30)])
+
+scores_dd = dict()
+for j in range(6):
+    other_orts = list(range(6))
+    other_orts.pop(j)
+    confuse_mat_ = np.vstack(
+        confuse_mat[min(j, e), max(j, e)] for e in other_orts)
+    scores_dd[j] = shrink_to_scores(confuse_mat_)
+
+fig, axes = plt.subplots(6, 2)
+for j in range(6):
+    plot_scores(scores_dd[j], times, axes=axes[j])
 
 plt.show()
