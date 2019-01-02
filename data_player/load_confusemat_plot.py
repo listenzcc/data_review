@@ -32,18 +32,16 @@ def plot_scores(scores, times, axes=None):
     plt.colorbar(im, ax=ax)
 
 
-confuse_mat = np.load('pics/confuse_mat_cross_lr_5hz.npy')
-# confuse_mat's shape is 6 x 6 x 5 x 100 x 101 x 101
-# 6 orts x 6 orts x 5 cross x 100 repeats x 101 times x 101 times
-confuse_mat = np.transpose(confuse_mat, [0, 1, 4, 5, 2, 3])
-
-
 def shrink_to_scores(mat_4d):
+    # this function is to squeeze 1st and 2nd dim by mean values
+    # it is designed to mean different ort conditions
     tmp = np.mean(mat_4d, 0)
     return np.mean(tmp, 0)
 
 
 def plot_confuse_mat(confuse_mat, times):
+    # this is used to plot confume_mat in a full manner
+    # compare each two orts
     fig, axes = plt.subplots(6, 6)
     for j in range(6):
         for k in range(6):
@@ -63,11 +61,23 @@ def plot_confuse_mat(confuse_mat, times):
             ax.set_ylabel('Training Time (s)')
             ax.set_title('Generalization across time and condition')
             plt.colorbar(im, ax=ax)
+    return fig
+
+
+mat_fname = 'confuse_mat_cross_QYJ_lr_5hz'
+confuse_mat = np.load('pics/%s.npy' % mat_fname)
+# confuse_mat's shape is 6 x 6 x 5 x 100 x 101 x 101
+# 6 orts x 6 orts x 5 cross x 100 repeats x 101 times x 101 times
+confuse_mat = np.transpose(confuse_mat, [0, 1, 4, 5, 2, 3])
 
 
 times = np.linspace(-0.2, 0.8, 101)
-# plot_scores(scores, times)
-plot_confuse_mat(confuse_mat, times)
+
+# plot every confuse_mat in non-diag positions
+fig = plot_confuse_mat(confuse_mat, times)
+fig.set_figwidth(10)
+fig.set_figheight(10)
+fig.savefig('pics/%s_0.png' % mat_fname, dpi=300)
 
 ort_combine = dict()
 ort_combine[0] = [(0, 1), (0, 2), (0, 3), (0, 4), (0, 5),
@@ -85,9 +95,13 @@ for dort_ in ort_combine.keys():
         confuse_mat[e[0], e[1]] for e in ort_combine[dort_])
     scores_d[dort_] = shrink_to_scores(confuse_mat_)
 
+# plot confuse_mat in mean manner, mean on 4 combines
 fig, axes = plt.subplots(4, 2)
 for dort_ in ort_combine.keys():
     plot_scores(scores_d[dort_], times, axes=axes[int(dort_/30)])
+fig.set_figwidth(10)
+fig.set_figheight(10)
+fig.savefig('pics/%s_1.png' % mat_fname, dpi=300)
 
 scores_dd = dict()
 for j in range(6):
@@ -97,8 +111,12 @@ for j in range(6):
         confuse_mat[min(j, e), max(j, e)] for e in other_orts)
     scores_dd[j] = shrink_to_scores(confuse_mat_)
 
+# plot confuse_mat in mean manner, mean on 6 orts with others
 fig, axes = plt.subplots(6, 2)
 for j in range(6):
     plot_scores(scores_dd[j], times, axes=axes[j])
+fig.set_figwidth(10)
+fig.set_figheight(10)
+fig.savefig('pics/%s_2.png' % mat_fname, dpi=300)
 
 plt.show()

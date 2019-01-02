@@ -5,7 +5,6 @@ import matplotlib.pyplot as plt
 
 import itertools
 
-import mne
 from mne.decoding import GeneralizingEstimator
 from tools_loaddata import para_setting, get_epochs
 
@@ -18,8 +17,9 @@ sys.path.append('C:\\Users\\liste\\Documents\\Python Scripts\\clock_tools')
 from simple_timer import simple_timer
 
 n_jobs = 6
-clf = make_pipeline(StandardScaler(), LogisticRegression(
-    solver='liblinear', penalty='l1'))
+clf = make_pipeline(StandardScaler(), LogisticRegression())
+# clf = make_pipeline(StandardScaler(), LogisticRegression(
+#     solver='liblinear', penalty='l1'))
 # clf = make_pipeline(StandardScaler(), SVC(gamma='auto'))
 scoring = 'accuracy'
 
