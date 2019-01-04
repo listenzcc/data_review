@@ -3,7 +3,7 @@ from sklearn.pipeline import make_pipeline
 from sklearn.preprocessing import StandardScaler
 from sklearn.linear_model import LogisticRegression
 from sklearn.svm import SVC
-from load_train_test_each_two_orts import load_train_test
+from tools_load_train_test_each_two_orts import load_train_test
 import os
 
 assert(os.path.isdir('pics'))
