@@ -53,7 +53,7 @@ def plot_scores(scores, times, axes=None):
 
 def load_train_test(clf, filedir, confuse_mat_path, freq_h=15,
                     use_good_sensors=False,
-                    decim=10, n_jobs=6, scoring='accuracy'):
+                    decim=10, n_jobs=12, scoring='accuracy'):
 
     # initial running timer
     st = simple_timer()

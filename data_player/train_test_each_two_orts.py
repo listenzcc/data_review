@@ -14,8 +14,8 @@ clf = make_pipeline(StandardScaler(), LogisticRegression())
 # clf = make_pipeline(StandardScaler(), SVC(gamma='auto'))
 scoring = 'accuracy'
 
-for name in ['ZYF', 'QYJ']:
-    for freq_h in [5, 10]:
+for name in ['QYJ', 'ZYF']:
+    for freq_h in [60, 40]:  # [5, 10]:
         filedir = 'D:/BeidaShuju/rawdata/%s' % name
         savepath = 'pics/confuse_mat_cross_%s_lr_%dHz.npy' % (name, freq_h)
         load_train_test(clf, filedir=filedir,

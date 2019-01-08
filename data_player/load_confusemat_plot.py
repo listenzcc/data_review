@@ -64,7 +64,7 @@ def plot_confuse_mat(confuse_mat, times):
     return fig
 
 
-mat_fname = 'confuse_mat_cross_QYJ_lr_10hz'
+mat_fname = 'confuse_mat_cross_ZYF_lr_40hz'
 confuse_mat = np.load('pics/%s.npy' % mat_fname)
 # confuse_mat's shape is 6 x 6 x 5 x 100 x 101 x 101
 # 6 orts x 6 orts x 5 cross x 100 repeats x 101 times x 101 times
