@@ -80,7 +80,7 @@ for freq, (fmin, fmax) in enumerate(freq_ranges):
 
     # Save mean scores over folds for each frequency and time window
     freq_scores[freq] = np.mean(cross_val_score(estimator=clf, X=X, y=y,
-                                                scoring='roc_auc', cv=cv,
+                                                scoring='accuracy', cv=cv,
                                                 n_jobs=1), axis=0)
 
 plt.bar(freqs[:-1], freq_scores, width=np.diff(freqs)[0],
