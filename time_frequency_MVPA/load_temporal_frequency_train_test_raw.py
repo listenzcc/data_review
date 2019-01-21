@@ -1,4 +1,4 @@
-# coding: utf-8
+py  # coding: utf-8
 
 import matplotlib.pyplot as plt
 import mne
@@ -10,7 +10,12 @@ from sklearn.pipeline import make_pipeline
 from sklearn.preprocessing import LabelEncoder
 from sklearn.preprocessing import StandardScaler
 from sklearn.model_selection import StratifiedKFold, cross_val_score
-import time
+
+
+import sys
+
+sys.path.append('C:\\Users\\liste\\Documents\\Python Scripts\\clock_tools')
+from simple_timer import simple_timer
 
 
 def para_setting(filedir, train=True):
@@ -51,16 +56,16 @@ def super_trail(X, y, select_y=None):
     return newX, newy
 
 
-raise Exception('This is proofed to be failed, try others.')
+# init running timer
+st = simple_timer()
 
 # Instantiate label encoder
 le = LabelEncoder()
 
 # init clf
-LR = LogisticRegression(multi_class='auto', solver='lbfgs')
 clf = make_pipeline(CSP(n_components=4, reg=None, log=True,
                         norm_trace=False),
-                    LR)
+                    LogisticRegression())
 scoring = 'accuracy'
 n_splits = 6
 cv = StratifiedKFold(n_splits=n_splits, shuffle=True)
@@ -96,24 +101,23 @@ n_windows = len(centered_w_times)
 # init scores
 tf_scores = np.zeros((n_freqs - 1, n_windows))
 
-n_jobs = 20
+st.click()
 for freq, (fmin, fmax) in enumerate(freq_ranges):
     w_size = n_cycles / ((fmax + fmin) / 2.)
     print(freq, fmin, fmax, w_size)
     epochs_filter = epochs.copy().filter(
-        fmin, fmax, n_jobs=n_jobs, fir_design='firwin')
+        fmin, fmax, n_jobs=4, fir_design='firwin')
     for t, w_time in enumerate(centered_w_times):
         w_tmin = w_time - w_size / 2.
         w_tmax = w_time + w_size / 2.
-        print('---------------------------------------------------------')
-        print(freq, fmin, fmax, w_size)
-        print(t, len(centered_w_times), w_tmin, w_tmax)
+        print(t, w_tmin, w_tmax)
         X = epochs.copy().crop(w_tmin, w_tmax).get_data()
         newX, newy = super_trail(X, y)
         score = cross_val_score(estimator=clf,
                                 X=newX, y=newy,
                                 scoring=scoring, cv=cv,
-                                n_jobs=n_jobs)
+                                n_jobs=6)
         tf_scores[freq, t] = np.mean(score)
+        assert(1 == 2)
 
-np.save('tf_scores_%s.npy' % time.ctime(), tf_scores)
+st.click()
